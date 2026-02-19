@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grade Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    .input-group {
+      margin: 20px 0;
+      background-color: white;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+    input {
+      width: 95%;
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    input:focus {
+      outline: none;
+      border-color: #28a745;
+    }
+    button {
+      width: 100%;
+      background-color: #28a745;
+      color: white;
+      padding: 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #1e7e34;
+    }
+    #result {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      min-height: 50px;
+    }
+    .success {
+      background-color: #d4edda;
+      border: 2px solid #28a745;
+      color: #155724;
+    }
+    .error {
+      background-color: #f8d7da;
+      border: 2px solid #dc3545;
+      color: #721c24;
+    }
+    .instruction {
+      font-size: 14px;
+      color: #666;
+      font-style: italic;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+<body>
+<h1>📊 Grade Calculator</h1>
+
+<div class="input-group">
+  <label>Enter 5 Test Scores:</label>
+  <input type="text" id="score1" placeholder="Score 1">
+  <input type="text" id="score2" placeholder="Score 2">
+  <input type="text" id="score3" placeholder="Score 3">
+  <input type="text" id="score4" placeholder="Score 4">
+  <input type="text" id="score5" placeholder="Score 5">
+  <p class="instruction">Enter numeric grades (0-100)</p>
+</div>
+
+<button id="calcBtn">Calculate Grades</button>
+
+<div id="result"></div>
+
+<script>
+  // ============================================
+  // MODULE 1: INPUT - Get data from user
+  // ============================================
+  function getUserScores() {
+    let score1Text = document.getElementById("score1").value;
+
+    // Get the values from score2, score3, score4, score5 input fields
+    let score2Text = document.getElementById("score2").value;
+    let score3Text = document.getElementById("score3").value;
+    let score4Text = document.getElementById("score4").value;
+    let score5Text = document.getElementById("score5").value;
+
+    // Return an object with all five score properties
+    let retObj = {
+      'score1': score1Text,
+      'score2': score2Text,
+      'score3': score3Text,
+      'score4': score4Text,
+      'score5': score5Text
+    };
+    return retObj;
+  }
+
+  // ============================================
+  // MODULE 2: PROCESS - Calculate statistics
+  // ============================================
+
+  function buildScoreArray(scoreObj) {
+    // Create an empty array called scores
+    let scores = [];
+
+    // Convert score1 to a number using parseFloat and push to scores array
+    let num1 = parseFloat(scoreObj.score1);
+    scores.push(num1);
+
+    // Do the same for score2, score3, score4, score5
+    let num2 = parseFloat(scoreObj.score2);
+    scores.push(num2);
+
+    let num3 = parseFloat(scoreObj.score3);
+    scores.push(num3);
+
+    let num4 = parseFloat(scoreObj.score4);
+    scores.push(num4);
+
+    let num5 = parseFloat(scoreObj.score5);
+    scores.push(num5);
+
+    // Return the scores array
+    return scores;
+  }
+
+  function calculateAverage(scores) {
+    // Create a variable called sum and set it to 0
+    let sum = 0;
+
+    // Use a for loop to add up all scores in the array
+    for (let i = 0; i < scores.length; i++) {
+      sum += scores[i];
+    }
+
+    // Calculate average by dividing sum by scores.length
+    let avg = sum / scores.length;
+    return avg;
+  }
+
+  function findHighest(scores) {
+    // Create a variable called highest and set it to scores[0]
+    let highest = scores[0];
+
+    // Use a for loop starting at i=1 to check remaining scores
+    for (let i = 1; i < scores.length; i++) {
+      if (scores[i] > highest) {
+        highest = scores[i];
+      }
+    }
+
+    // Return highest
+    return highest;
+  }
+
+  function findLowest(scores) {
+    // Create a variable called lowest and set it to scores[0]
+    let lowest = scores[0];
+
+    // Use a for loop starting at i=1 to check remaining scores
+    for (let i = 1; i < scores.length; i++) {
+      if (scores[i] < lowest) {
+        lowest = scores[i];
+      }
+    }
+
+    // Return lowest
+    return lowest;
+  }
+
+  // ============================================
+  // MODULE 3: OUTPUT - Display results
+  // ============================================
+  function showError(errorMessage) {
+    let result = document.getElementById("result");
+    result.className = "error";
+    result.innerHTML = "❌ " + errorMessage;
+  }
+
+  function showSuccess(scores, average, highest, lowest) {
+    // Set result to the results area and add the success class
+    let result = document.getElementById("result");
+    result.className = "success";
+
+    // Build a string that shows all scores using a for loop
+    let scoreList = "Scores: ";
+    for (let i = 0; i < scores.length; i++) {
+      scoreList += scores[i];
+      if (i < scores.length - 1) {
+        scoreList += ", ";
+      }
+    }
+
+    // Create message variable with HTML
+    let message = `
+      <strong>Grade Report 📝</strong><br>
+      ${scoreList}<br>
+      Average: ${average.toFixed(2)}<br>
+      Highest: ${highest}<br>
+      Lowest: ${lowest}
+    `;
+
+    result.innerHTML = message;
+  }
+
+  // ============================================
+  // MAIN CONTROLLER - Coordinates all modules
+  // ============================================
+  function handleCalculate() {
+    // Clear any previous results
+    document.getElementById("result").innerHTML = "";
+
+    // Call getUserScores() and store result in userScores
+    let userScores = getUserScores();
+
+    // Call buildScoreArray() with userScores and store in scores array
+    let scores = buildScoreArray(userScores);
+
+    // Validate all scores in the array
+    for (let i = 0; i < scores.length; i++) {
+      if (isNaN(scores[i]) || scores[i] < 0 || scores[i] > 100) {
+        showError("All scores must be numbers between 0 and 100");
+        return;
+      }
+    }
+
+    // Call calculateAverage(), findHighest(), findLowest()
+    let average = calculateAverage(scores);
+    let highest = findHighest(scores);
+    let lowest = findLowest(scores);
+
+    // Call showSuccess()
+    showSuccess(scores, average, highest, lowest);
+  }
+
+  // ============================================
+  // EVENT LISTENER SETUP5
+  // ============================================
+  let calcBtn = document.getElementById("calcBtn");
+  calcBtn.addEventListener("click", handleCalculate);
+</script>
+
+</body>
+</html>
